@@ -15,23 +15,37 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sabicook.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FF6B35"
-      }
+      },
+      "package": "com.sabicook.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
     "extra": {
-      "openaiApiKey": "your_openai_api_key_here"
+      "eas": {
+        "projectId": "sabicook-project-id"
+      }
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts"]
+        }
+      ]
     ],
-    "scheme": "sabicook"
+    "scheme": "sabicook",
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
