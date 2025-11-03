@@ -146,7 +146,7 @@ export default function AboutScreen() {
               <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
               <Text style={styles.featureText}>Smart shopping lists</Text>
             </View>
-            <View style={styles.featureItem}>
+            <View style={[styles.featureItem, styles.lastFeatureItem]}>
               <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
               <Text style={styles.featureText}>Community recipe sharing</Text>
             </View>
