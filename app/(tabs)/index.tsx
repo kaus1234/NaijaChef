@@ -12,7 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useRecipe } from '@/src/context/RecipeContext';
 import { useAuth } from '@/src/context/AuthContext';
-import { allIngredients } from '@/src/data/ingredients';
+import { getAllIngredients } from '@/src/data/ingredients';
 
 export default function HomeScreen() {
   const { user, signOut } = useAuth();
