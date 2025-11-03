@@ -28,6 +28,9 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
+  // Get all ingredients
+  const allIngredients = getAllIngredients();
+
   // Filter ingredients based on search
   const filteredIngredients = allIngredients.filter(ingredient =>
     ingredient.name.toLowerCase().includes(searchQuery.toLowerCase())
