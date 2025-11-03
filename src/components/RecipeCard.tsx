@@ -53,15 +53,9 @@ export default function RecipeCard({
       <View style={styles.card}>
         {/* Recipe Image */}
         <View style={styles.imageContainer}>
-          <Image
-            source={
-              recipe.image
-                ? { uri: recipe.image }
-                : require('../../assets/placeholder-recipe.png')
-            }
-            style={styles.image}
-            defaultSource={require('../../assets/placeholder-recipe.png')}
-          />
+          <View style={[styles.image, styles.placeholderImage]}>
+            <Text style={styles.placeholderIcon}>🍳</Text>
+          </View>
           <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.6)']}
             style={styles.imageGradient}
