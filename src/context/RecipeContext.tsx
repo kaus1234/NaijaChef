@@ -47,6 +47,7 @@ const RecipeContext = createContext<RecipeContextType | undefined>(undefined);
 export function RecipeProvider({ children }: { children: ReactNode }) {
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
   const [generatedRecipes, setGeneratedRecipes] = useState<Recipe[]>([]);
+  const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
