@@ -199,18 +199,124 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const generateMealPlan = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Mock meal plan data
+      const mockMealPlan: MealPlan = {
+        id: '1',
+        week: 'This Week',
+        days: [
+          {
+            day: 'Monday',
+            meals: {
+              breakfast: 'Akara and Pap',
+              lunch: 'Jollof Rice with Chicken',
+              dinner: 'Egusi Soup with Pounded Yam'
+            }
+          },
+          {
+            day: 'Tuesday',
+            meals: {
+              breakfast: 'Bread and Tea',
+              lunch: 'Fried Rice with Salad',
+              dinner: 'Okra Soup with Garri'
+            }
+          },
+          {
+            day: 'Wednesday',
+            meals: {
+              breakfast: 'Moi Moi',
+              lunch: 'Coconut Rice with Beef',
+              dinner: 'Banga Soup with Fufu'
+            }
+          },
+          {
+            day: 'Thursday',
+            meals: {
+              breakfast: 'Yam and Egg Sauce',
+              lunch: 'Jollof Spaghetti',
+              dinner: 'Vegetable Soup with Semolina'
+            }
+          },
+          {
+            day: 'Friday',
+            meals: {
+              breakfast: 'Akamu and Beans',
+              lunch: 'Rice and Stew',
+              dinner: 'Ogbono Soup with Eba'
+            }
+          },
+          {
+            day: 'Saturday',
+            meals: {
+              breakfast: 'Pancakes',
+              lunch: 'Party Jollof Rice',
+              dinner: 'Pepper Soup with Yam'
+            }
+          },
+          {
+            day: 'Sunday',
+            meals: {
+              breakfast: 'Indomie and Egg',
+              lunch: 'Rice and Stew with Salad',
+              dinner: 'Afang Soup with Pounded Yam'
+            }
+          }
+        ],
+        shoppingList: [
+          {
+            category: 'Proteins',
+            items: [
+              { name: 'Chicken', quantity: '1kg', checked: false },
+              { name: 'Beef', quantity: '500g', checked: false },
+              { name: 'Fish', quantity: '2 medium', checked: false }
+            ]
+          },
+          {
+            category: 'Carbohydrates',
+            items: [
+              { name: 'Rice', quantity: '5kg', checked: false },
+              { name: 'Yam', quantity: '3 tubers', checked: false },
+              { name: 'Garri', quantity: '2kg', checked: false }
+            ]
+          },
+          {
+            category: 'Vegetables',
+            items: [
+              { name: 'Tomatoes', quantity: '10 pieces', checked: false },
+              { name: 'Pepper', quantity: '1 bunch', checked: false },
+              { name: 'Onions', quantity: '5 pieces', checked: false }
+            ]
+          }
+        ]
+      };
+
+      setMealPlan(mockMealPlan);
+    } catch (error: any) {
+      setError(error.message || 'Failed to generate meal plan');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const clearRecipes = () => {
     setGeneratedRecipes([]);
+    setMealPlan(null);
     setError(null);
   };
 
   const value: RecipeContextType = {
     selectedIngredients,
     generatedRecipes,
+    mealPlan,
     loading,
     error,
     setSelectedIngredients,
     generateRecipes,
+    generateMealPlan,
     clearRecipes,
   };
 
