@@ -274,7 +274,7 @@ export default function RecipeDetailScreen() {
                 <Text style={styles.nutritionLabel}>Prep Time:</Text>
                 <Text style={styles.nutritionValue}>{recipe.cookingTime}</Text>
               </View>
-              <View style={styles.nutritionRow}>
+              <View style={[styles.nutritionRow, styles.lastNutritionRow]}>
                 <Text style={styles.nutritionLabel}>Servings:</Text>
                 <Text style={styles.nutritionValue}>{recipe.servings}</Text>
               </View>
