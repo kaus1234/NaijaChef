@@ -27,7 +27,7 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "openaiApiKey": process.env.EXPO_PUBLIC_OPENAI_API_KEY
+      "openaiApiKey": "your_openai_api_key_here"
     },
     "plugins": [
       "expo-router"
