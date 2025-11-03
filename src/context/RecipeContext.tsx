@@ -1,35 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { openaiService, Recipe, MealPlan } from '@/src/services/openai';
 
-interface Recipe {
-  id: string;
-  title: string;
-  description: string;
-  ingredients: { name: string; quantity: string }[];
-  instructions: { step: number; instruction: string; time?: string }[];
-  cookingTime: string;
-  servings: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  cost: string;
-  category: string;
-}
-
-interface MealPlan {
-  id: string;
-  week: string;
-  days: {
-    day: string;
-    meals: {
-      breakfast: string;
-      lunch: string;
-      dinner: string;
-    };
-  }[];
-  shoppingList: {
-    category: string;
-    items: { name: string; quantity: string; checked: boolean }[];
-  }[];
-}
 
 interface RecipeContextType {
   selectedIngredients: string[];
