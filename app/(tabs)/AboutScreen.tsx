@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
-  featureItem:lastChild: {
+  lastFeatureItem: {
     marginBottom: 0,
   },
   featureText: {
