@@ -13,13 +13,32 @@ interface Recipe {
   category: string;
 }
 
+interface MealPlan {
+  id: string;
+  week: string;
+  days: {
+    day: string;
+    meals: {
+      breakfast: string;
+      lunch: string;
+      dinner: string;
+    };
+  }[];
+  shoppingList: {
+    category: string;
+    items: { name: string; quantity: string; checked: boolean }[];
+  }[];
+}
+
 interface RecipeContextType {
   selectedIngredients: string[];
   generatedRecipes: Recipe[];
+  mealPlan: MealPlan | null;
   loading: boolean;
   error: string | null;
   setSelectedIngredients: (ingredients: string[]) => void;
   generateRecipes: () => Promise<void>;
+  generateMealPlan: () => Promise<void>;
   clearRecipes: () => void;
 }
 
