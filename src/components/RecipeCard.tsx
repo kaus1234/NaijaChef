@@ -154,6 +154,14 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
+  placeholderImage: {
+    backgroundColor: '#FFF3F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderIcon: {
+    fontSize: 40,
+  },
   imageGradient: {
     position: 'absolute',
     bottom: 0,
