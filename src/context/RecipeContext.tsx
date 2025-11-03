@@ -68,8 +68,6 @@ export function RecipeProvider({ children }: RecipeProviderProps) {
       setLoading(true);
       clearError();
 
-      // Import here to avoid circular dependencies
-      const { openaiService } = await import('@/src/services/openai');
       const recipes = await openaiService.generateRecipes(selectedIngredients);
 
       setGeneratedRecipes(recipes);
