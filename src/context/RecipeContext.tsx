@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Recipe, MealPlan } from '@/src/services/openai';
+import { Recipe, MealPlan, openaiService } from '@/src/services/openai';
 
 interface RecipeContextType {
   selectedIngredients: string[];
