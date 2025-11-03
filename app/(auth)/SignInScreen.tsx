@@ -23,7 +23,8 @@ export default function SignInScreen() {
   const handleSignIn = async () => {
     try {
       await signIn(email.trim(), password);
-      // Navigation will be handled by the auth context and tab layout
+      // Navigate to main app after successful sign in
+      router.replace('/(tabs)');
     } catch (error: any) {
       Alert.alert('Sign In Error', error.message);
     }
