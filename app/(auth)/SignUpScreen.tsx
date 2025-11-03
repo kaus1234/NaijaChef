@@ -51,7 +51,8 @@ export default function SignUpScreen() {
 
     try {
       await signUp(email.trim(), password, name.trim());
-      // Navigation will be handled by the auth context and tab layout
+      // Navigate to main app after successful sign up
+      router.replace('/(tabs)');
     } catch (error: any) {
       Alert.alert('Sign Up Error', error.message);
     }
