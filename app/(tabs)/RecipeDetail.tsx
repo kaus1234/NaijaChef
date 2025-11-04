@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
+  ScrollView,
   TouchableOpacity,
   Alert,
 } from 'react-native';
@@ -65,13 +65,13 @@ export default function RecipeDetailScreen() {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Easy':
-        return '#4CAF50';
+        return '#10B981';
       case 'Medium':
-        return '#FF9800';
+        return '#F59E0B';
       case 'Hard':
-        return '#F44336';
+        return '#EF4444';
       default:
-        return '#FF9800';
+        return '#F59E0B';
     }
   };
 
@@ -81,7 +81,7 @@ export default function RecipeDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#FF6B35', '#FFB84D']} style={styles.gradient}>
+      <LinearGradient colors={['#10B981', '#059669']} style={styles.gradient}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
@@ -95,7 +95,7 @@ export default function RecipeDetailScreen() {
               <Ionicons
                 name={isRecipeSaved(recipe.id) ? 'heart' : 'heart-outline'}
                 size={24}
-                color={isRecipeSaved(recipe.id) ? '#FF1744' : '#fff'}
+                color={isRecipeSaved(recipe.id) ? '#EF4444' : '#fff'}
               />
             </TouchableOpacity>
           </View>
@@ -138,7 +138,7 @@ export default function RecipeDetailScreen() {
                 tab === 'instructions' ? 'list-outline' : 'restaurant-outline'
               }
               size={20}
-              color={activeTab === tab ? '#FF6B35' : '#999'}
+              color={activeTab === tab ? '#FFFFFF' : '#9CA3AF'}
             />
             <Text style={[
               styles.tabText,
@@ -173,7 +173,7 @@ export default function RecipeDetailScreen() {
                   checkedIngredients.has(index) && styles.checkedCheckbox,
                 ]}>
                   {checkedIngredients.has(index) && (
-                    <Ionicons name="checkmark" size={16} color="#fff" />
+                    <Ionicons name="checkmark" size={16} color="#FFFFFF" />
                   )}
                 </View>
                 <Text style={[
@@ -186,7 +186,7 @@ export default function RecipeDetailScreen() {
             ))}
 
             <TouchableOpacity style={styles.addToShoppingListButton}>
-              <Ionicons name="cart-outline" size={20} color="#FF6B35" />
+              <Ionicons name="cart-outline" size={20} color="#F97316" />
               <Text style={styles.addToShoppingListText}>Add to Shopping List</Text>
             </TouchableOpacity>
           </View>
@@ -212,7 +212,7 @@ export default function RecipeDetailScreen() {
                   onPress={() => toggleStepComplete(index)}
                 >
                   {completedSteps.has(index) ? (
-                    <Ionicons name="checkmark" size={20} color="#fff" />
+                    <Ionicons name="checkmark" size={20} color="#FFFFFF" />
                   ) : (
                     <Text style={styles.stepNumberText}>{index + 1}</Text>
                   )}
@@ -226,7 +226,7 @@ export default function RecipeDetailScreen() {
                   </Text>
                   {instruction.time && (
                     <View style={styles.stepTime}>
-                      <Ionicons name="time-outline" size={14} color="#666" />
+                      <Ionicons name="time-outline" size={14} color="#6B7280" />
                       <Text style={styles.stepTimeText}>{instruction.time}</Text>
                     </View>
                   )}
@@ -295,7 +295,7 @@ export default function RecipeDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
   },
   gradient: {
     borderBottomLeftRadius: 30,
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   metaContainer: {
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   difficultyText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 12,
     fontWeight: 'bold',
   },
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   metaText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 14,
     marginLeft: 4,
   },
@@ -373,11 +373,11 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: '#E5E7EB',
   },
   tab: {
     flexDirection: 'row',
@@ -388,21 +388,21 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   activeTab: {
-    backgroundColor: '#FFF3F0',
+    backgroundColor: '#ECFDF5',
   },
   tabText: {
     fontSize: 14,
-    color: '#999',
+    color: '#6B7280',
     marginLeft: 6,
     fontWeight: '500',
   },
   activeTabText: {
-    color: '#FF6B35',
+    color: '#10B981',
     fontWeight: 'bold',
   },
   content: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
   },
   tabContent: {
     padding: 20,
@@ -416,11 +416,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#1F2937',
   },
   clearButtonText: {
     fontSize: 14,
-    color: '#FF6B35',
+    color: '#10B981',
     fontWeight: '600',
   },
   ingredientItem: {
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 16,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#F9FAFB',
     borderRadius: 12,
     marginBottom: 8,
   },
@@ -437,37 +437,37 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#e0e0e0',
+    borderColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   checkedCheckbox: {
-    backgroundColor: '#4CAF50',
-    borderColor: '#4CAF50',
+    backgroundColor: '#10B981',
+    borderColor: '#10B981',
   },
   ingredientText: {
     fontSize: 16,
-    color: '#333',
+    color: '#374151',
     flex: 1,
   },
   checkedIngredientText: {
-    textDecorationLine: 'line-through',
-    color: '#999',
+    textDecorationLineThrough: 'line-through',
+    color: '#9CA3AF',
   },
   addToShoppingListButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFF3F0',
+    backgroundColor: '#FEF2F2',
     borderRadius: 12,
     paddingVertical: 16,
     marginTop: 20,
     borderWidth: 1,
-    borderColor: '#FF6B35',
+    borderColor: '#F97316',
   },
   addToShoppingListText: {
-    color: '#FF6B35',
+    color: '#F97316',
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
@@ -481,31 +481,31 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#F9FAFB',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   completedStepNumber: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#10B981',
   },
   stepNumberText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#666',
+    color: '#6B7280',
   },
   stepContent: {
     flex: 1,
   },
   stepInstruction: {
     fontSize: 16,
-    color: '#333',
+    color: '#374151',
     lineHeight: 22,
     marginBottom: 8,
   },
   completedStepText: {
-    textDecorationLine: 'line-through',
-    color: '#999',
+    textDecorationLineThrough: 'line-through',
+    color: '#9CA3AF',
   },
   stepTime: {
     flexDirection: 'row',
@@ -513,34 +513,34 @@ const styles = StyleSheet.create({
   },
   stepTimeText: {
     fontSize: 12,
-    color: '#666',
+    color: '#6B7280',
     marginLeft: 4,
   },
   progressContainer: {
     marginTop: 20,
     paddingTop: 20,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: '#E5E7EB',
   },
   progressText: {
     fontSize: 16,
-    color: '#333',
+    color: '#1F2937',
     marginBottom: 12,
     textAlign: 'center',
     fontWeight: '600',
   },
   progressBar: {
     height: 8,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#E5E7EB',
     borderRadius: 4,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#10B981',
   },
   nutritionCard: {
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#F9FAFB',
     borderRadius: 16,
     padding: 20,
     marginBottom: 20,
@@ -551,28 +551,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: '#E5E7EB',
   },
   lastNutritionRow: {
     borderBottomWidth: 0,
   },
   nutritionLabel: {
     fontSize: 16,
-    color: '#666',
+    color: '#6B7280',
   },
   nutritionValue: {
     fontSize: 16,
-    color: '#333',
+    color: '#1F2937',
     fontWeight: '600',
   },
   disclaimer: {
-    backgroundColor: '#FFF8E1',
+    backgroundColor: '#ECFDF5',
     borderRadius: 12,
     padding: 16,
   },
   disclaimerText: {
     fontSize: 14,
-    color: '#666',
+    color: '#6B7280',
     lineHeight: 20,
   },
 });
