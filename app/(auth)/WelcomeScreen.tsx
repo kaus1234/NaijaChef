@@ -1,26 +1,33 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useAuth } from '@/src/context/AuthContext';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function WelcomeScreen() {
   const router = useRouter();
-  const { loading } = useAuth();
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
+  const handleGetStarted = () => {
+    router.push('/(  // Navigate to main app after sign up
     );
-  }
+  };
+
+  const handleSignIn = () => {
+    router.push('/(  // Navigate to sign in screen
+    );
+  };
 
   return (
-    <LinearGradient colors={['#FF6B35', '#FFB84D']} style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Logo and Title */}
-        <View style={styles.headerContainer}>
+    <View style={styles.container}>
+      <LinearGradient colors={['#10B981', '#059669']} style={styles.gradient}>
+        {/* Logo Section */}
+        <View style={styles.logoSection}>
           <View style={styles.logoContainer}>
             <Text style={styles.logo}>🍳</Text>
           </View>
@@ -31,7 +38,9 @@ export default function WelcomeScreen() {
         {/* Features */}
         <View style={styles.featuresContainer}>
           <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>🥘</Text>
+            <View style={styles.featureIcon}>
+              <Text style={styles.featureIcon}>🥘</Text>
+            </View>
             <Text style={styles.featureTitle}>Authentic Recipes</Text>
             <Text style={styles.featureDescription}>
               Discover real Nigerian dishes from Jollof Rice to Efo Riro
@@ -39,7 +48,9 @@ export default function WelcomeScreen() {
           </View>
 
           <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>🤖</Text>
+            <View style={styles.featureIcon}>
+              <Text style={styles.featureIcon}>🤖️</Text>
+            </View>
             <Text style={styles.featureTitle}>AI-Powered</Text>
             <Text style={styles.featureDescription}>
               Get personalized recipes based on ingredients you have
@@ -47,7 +58,9 @@ export default function WelcomeScreen() {
           </View>
 
           <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>🗓️</Text>
+            <View style={styles.featureIcon}>
+              <Text style={styles.featureIcon}>📅</Text>
+            </View>
             <Text style={styles.featureTitle}>Meal Planning</Text>
             <Text style={styles.featureDescription}>
               Generate weekly Nigerian meal plans with shopping lists
@@ -56,57 +69,53 @@ export default function WelcomeScreen() {
         </View>
 
         {/* Action Buttons */}
-        <View style={styles.buttonContainer}>
+        <View style={styles.actionContainer}>
           <TouchableOpacity
-            style={[styles.button, styles.primaryButton]}
-            onPress={() => router.push('/(auth)/SignUpScreen')}
+            style={[styles.button, styles.generateButton]}
+            onPress={handleGetStarted}
           >
-            <Text style={styles.primaryButtonText}>Get Started</Text>
+            <Text style={styles.generateButtonText}>Get Started</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, styles.secondaryButton]}
-            onPress={() => router.push('/(auth)/SignInScreen')}
+            style={[styles.button, styles.signInButton]}
+            onPress={handleSignIn}
           >
-            <Text style={styles.secondaryButtonText}>Sign In</Text>
+            <Text style={styles.signInButtonText}>Sign In</Text>
           </TouchableOpacity>
         </View>
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            Built with ❤️ in Nigeria
-          </Text>
+          <View style={styles.footerTextContainer}>
+            <Text style={styles.footerText}>
+              Start your culinary journey with authentic Nigerian cuisine
+            </Text>
+            <Text style={styles.footerSubtext}>
+              Powered by AI technology
+            </Text>
+          </View>
         </View>
-      </ScrollView>
-    </LinearGradient>
+      </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
-    paddingVertical: 60,
-    paddingHorizontal: 30,
-  },
-  loadingContainer: {
+  gradient: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FF6B35',
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
-  loadingText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  headerContainer: {
+  logoSection: {
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 30,
   },
   logoContainer: {
     width: 100,
@@ -116,17 +125,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
   },
   logo: {
     fontSize: 50,
   },
   appName: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 10,
+    color: '#FFFFFF',
+    marginBottom: 8,
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
   },
   tagline: {
@@ -136,14 +149,23 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   featuresContainer: {
-    marginBottom: 50,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    gap: 20,
+    marginBottom: 40,
   },
   featureItem: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 16,
     padding: 20,
-    marginBottom: 20,
+    marginBottom: 15,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+    width: 250,
   },
   featureIcon: {
     fontSize: 40,
@@ -152,7 +174,7 @@ const styles = StyleSheet.create({
   featureTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#FFFFFF',
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -162,45 +184,63 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
   },
-  buttonContainer: {
-    marginBottom: 40,
+  actionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    gap: 12,
   },
   button: {
     paddingVertical: 18,
     paddingHorizontal: 40,
     borderRadius: 25,
-    alignItems: 'center',
-    marginBottom: 15,
-    shadowColor: '#000',
+    shadowColor: '#10B981',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 5,
   },
-  primaryButton: {
-    backgroundColor: '#fff',
+  generateButton: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
   },
+  signInButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: '#10B981',
+    borderWidth: 1,
+    },
   primaryButtonText: {
-    color: '#FF6B35',
+    color: '#F97316',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  secondaryButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderWidth: 2,
-    borderColor: '#fff',
-  },
-  secondaryButtonText: {
-    color: '#fff',
+  signInButtonText: {
+    color: '#F97316',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   footer: {
     alignItems: 'center',
+    paddingVertical: 30,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
   },
   footerText: {
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 14,
     fontWeight: '500',
+    textAlign: 'center',
+  },
+  footerSubtext: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 12,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
   },
 });
