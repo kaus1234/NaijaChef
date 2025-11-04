@@ -1,351 +1,585 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  RefreshControl,
+  TextInput,
+  FlatList,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useRecipe } from '@/src/context/RecipeContext';
 import { useAuth } from '@/src/context/AuthContext';
-import IngredientSelector from '@/src/components/IngredientSelector';
-import RecipeCard from '@/src/components/RecipeCard';
-import LoadingSpinner from '@/src/components/LoadingSpinner';
-import ErrorDisplay from '@/src/components/ErrorDisplay';
+import { getAllIngredients } from '@/src/data/ingredients';
 
 export default function HomeScreen() {
   const { user, signOut } = useAuth();
   const {
     selectedIngredients,
-    generatedRecipes,
+    generateRecipes,
     loading,
     error,
-    generateRecipes,
-    clearRecipes,
-    toggleIngredient,
-    isRecipeSaved,
-    saveRecipe,
-    unsaveRecipe,
+    setSelectedIngredients,
+    generatedRecipes
   } = useRecipe();
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+
+  // Get all ingredients
+  const allIngredients = getAllIngredients();
+
+  // Filter ingredients based on search
+  const filteredIngredients = allIngredients.filter(ingredient =>
+    ingredient.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Group ingredients by category
+  const ingredientsByCategory = filteredIngredients.reduce((acc, ingredient) => {
+    if (!acc[ingredient.category]) {
+      acc[ingredient.category] = [];
+    }
+    acc[ingredient.category].push(ingredient);
+    return acc;
+  }, {} as Record<string, typeof allIngredients>);
 
   const handleGenerateRecipes = async () => {
-    await generateRecipes();
+    try {
+      await generateRecipes();
+      // Navigate to recipe results or show in current screen
+    } catch (error) {
+      console.error('Error generating recipes:', error);
+    }
   };
 
-  const handleRecipePress = (recipe: any) => {
+  const toggleIngredient = (ingredient: string) => {
+    setSelectedIngredients(prev =>
+      prev.includes(ingredient)
+        ? prev.filter(i => i !== ingredient)
+        : [...prev, ingredient]
+    );
+  };
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategory(expandedCategory === category ? null : category);
+  };
+
+  const handleSignOut = () => {
+    signOut();
+  };
+
+  const navigateToRecipeDetail = (recipe: any) => {
     router.push({
       pathname: '/RecipeDetail',
       params: { recipe: JSON.stringify(recipe) }
     });
   };
 
-  const handleClearRecipes = () => {
-    clearRecipes();
-  };
-
-  const canGenerate = selectedIngredients.length >= 2;
-
   return (
-    <LinearGradient colors={['#FF6B35', '#FFB84D']} style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={handleClearRecipes} />
-        }
-      >
-        {/* Header */}
-        <View style={styles.header}>
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Modern Header */}
+        <LinearGradient
+          colors={['#10B981', '#059669']}
+          style={styles.header}
+        >
           <View style={styles.headerContent}>
-            <View>
+            <View style={styles.userInfo}>
               <Text style={styles.greeting}>
-                {user?.name ? `Welcome back, ${user.name.split(' ')[0]}! 👋` : 'Welcome! 👋'}
+                Hello, {user?.name ? user.name.split(' ')[0] : 'Chef'}! 👨‍🍳
               </Text>
               <Text style={styles.subtitle}>
-                What Nigerian dish would you like to cook today?
+                Create amazing Nigerian dishes with AI
               </Text>
             </View>
-            <TouchableOpacity style={styles.profileButton} onPress={signOut}>
+            <TouchableOpacity style={styles.profileButton} onPress={handleSignOut}>
               <Text style={styles.profileText}>👤</Text>
             </TouchableOpacity>
           </View>
-        </View>
 
-        {/* Ingredient Selection */}
-        <View style={styles.ingredientSection}>
-          <IngredientSelector
-            selectedIngredients={selectedIngredients}
-            onToggleIngredient={toggleIngredient}
-            maxSelections={10}
+          {/* Stats Cards */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>58</Text>
+              <Text style={styles.statLabel}>Ingredients</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>AI</Text>
+              <Text style={styles.statLabel}>Powered</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>∞</Text>
+              <Text style={styles.statLabel}>Recipes</Text>
+            </View>
+          </View>
+        </LinearGradient>
+
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="🔍 Search ingredients..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholderTextColor="#9CA3AF"
           />
         </View>
 
-        {/* Generate Button */}
+        {/* Selected Ingredients */}
         {selectedIngredients.length > 0 && (
-          <View style={styles.generateSection}>
-            <TouchableOpacity
-              style={[
-                styles.generateButton,
-                !canGenerate && styles.disabledGenerateButton,
-                loading && styles.loadingGenerateButton,
-              ]}
-              onPress={handleGenerateRecipes}
-              disabled={!canGenerate || loading}
+          <View style={styles.selectedContainer}>
+            <Text style={styles.selectedTitle}>Selected ({selectedIngredients.length})</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.selectedList}>
+                {selectedIngredients.map((ingredient, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.selectedChip}
+                    onPress={() => toggleIngredient(ingredient)}
+                  >
+                    <Text style={styles.selectedChipText}>{ingredient}</Text>
+                    <Text style={styles.removeIcon}>×</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>⚠️ {error}</Text>
+          </View>
+        )}
+
+        {/* Ingredients Categories */}
+        <View style={styles.ingredientsContainer}>
+          <Text style={styles.sectionTitle}>🥘 Choose Your Ingredients</Text>
+
+          {Object.entries(ingredientsByCategory).map(([category, items]) => (
+            <View key={category} style={styles.categoryContainer}>
+              <TouchableOpacity
+                style={styles.categoryHeader}
+                onPress={() => toggleCategory(category)}
+              >
+                <Text style={styles.categoryTitle}>{category}</Text>
+                <Text style={styles.categoryToggle}>
+                  {expandedCategory === category ? '▼' : '▶'}
+                </Text>
+              </TouchableOpacity>
+
+              {expandedCategory === category && (
+                <View style={styles.ingredientsGrid}>
+                  {items.map((ingredient, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.ingredientChip,
+                        selectedIngredients.includes(ingredient.name) && styles.selectedIngredientChip
+                      ]}
+                      onPress={() => toggleIngredient(ingredient.name)}
+                    >
+                      <Text style={styles.ingredientIcon}>{ingredient.icon}</Text>
+                      <Text style={[
+                        styles.ingredientName,
+                        selectedIngredients.includes(ingredient.name) && styles.selectedIngredientName
+                      ]}>
+                        {ingredient.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </View>
+          ))}
+        </View>
+
+        {/* Generate Button */}
+        <View style={styles.actionContainer}>
+          <TouchableOpacity
+            style={[
+              styles.generateButton,
+              loading && styles.disabledButton,
+              selectedIngredients.length < 2 && styles.disabledButton
+            ]}
+            onPress={handleGenerateRecipes}
+            disabled={loading || selectedIngredients.length < 2}
+          >
+            <LinearGradient
+              colors={['#F97316', '#EA580C']}
+              style={styles.generateButtonGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
             >
               <Text style={styles.generateButtonText}>
-                {loading ? 'Generating Recipes...' : `🍳 Generate Recipes (${selectedIngredients.length} ingredients)`}
+                {loading ? '🤖 Creating Magic...' : '🍳 Generate Recipes'}
               </Text>
-            </TouchableOpacity>
+            </LinearGradient>
+          </TouchableOpacity>
 
-            {selectedIngredients.length < 2 && (
-              <Text style={styles.helperText}>
-                Select at least 2 ingredients to generate recipes
-              </Text>
+          {selectedIngredients.length < 2 && (
+            <Text style={styles.helperText}>
+              Select at least 2 ingredients to generate recipes
+            </Text>
+          )}
+        </View>
+
+        {/* Generated Recipes Preview */}
+        {generatedRecipes.length > 0 && (
+          <View style={styles.recipesContainer}>
+            <Text style={styles.sectionTitle}>🍽️ Your Generated Recipes</Text>
+            {generatedRecipes.slice(0, 3).map((recipe, index) => (
+              <TouchableOpacity
+                key={recipe.id}
+                style={styles.recipeCard}
+                onPress={() => navigateToRecipeDetail(recipe)}
+              >
+                <View style={styles.recipeHeader}>
+                  <Text style={styles.recipeTitle}>{recipe.title}</Text>
+                  <Text style={styles.recipeTime}>⏱️ {recipe.cookingTime}</Text>
+                </View>
+                <Text style={styles.recipeDescription}>{recipe.description}</Text>
+                <View style={styles.recipeMeta}>
+                  <Text style={styles.recipeDifficulty}>
+                    {recipe.difficulty === 'Easy' ? '🟢' : recipe.difficulty === 'Medium' ? '🟡' : '🔴'} {recipe.difficulty}
+                  </Text>
+                  <Text style={styles.recipeCost}>{recipe.cost}</Text>
+                </View>
+                <View style={styles.recipeFooter}>
+                  <Text style={styles.viewRecipeText}>Tap to view full recipe →</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+
+            {generatedRecipes.length > 3 && (
+              <TouchableOpacity
+                style={styles.viewAllButton}
+                onPress={() => router.push('/RecipeList')}
+              >
+                <Text style={styles.viewAllButtonText}>View All Recipes ({generatedRecipes.length})</Text>
+              </TouchableOpacity>
             )}
           </View>
         )}
-
-        {/* Error Display */}
-        {error && (
-          <View style={styles.errorSection}>
-            <ErrorDisplay
-              message={error}
-              onRetry={handleGenerateRecipes}
-              type="error"
-            />
-          </View>
-        )}
-
-        {/* Loading State */}
-        {loading && (
-          <View style={styles.loadingSection}>
-            <LoadingSpinner
-              message="Generating delicious Nigerian recipes..."
-              size="large"
-            />
-          </View>
-        )}
-
-        {/* Generated Recipes */}
-        {generatedRecipes.length > 0 && !loading && (
-          <View style={styles.recipesSection}>
-            <View style={styles.recipesHeader}>
-              <Text style={styles.recipesTitle}>
-                🍛 Generated Recipes ({generatedRecipes.length})
-              </Text>
-              <TouchableOpacity onPress={handleClearRecipes}>
-                <Text style={styles.clearText}>Clear</Text>
-              </TouchableOpacity>
-            </View>
-
-            {generatedRecipes.map((recipe, index) => (
-              <RecipeCard
-                key={`${recipe.id}-${index}`}
-                recipe={recipe}
-                onPress={() => handleRecipePress(recipe)}
-                onSave={() => isRecipeSaved(recipe.id) ? unsaveRecipe(recipe.id) : saveRecipe(recipe)}
-                isSaved={isRecipeSaved(recipe.id)}
-                showSaveButton={true}
-              />
-            ))}
-          </View>
-        )}
-
-        {/* Empty State */}
-        {selectedIngredients.length === 0 && generatedRecipes.length === 0 && !loading && (
-          <View style={styles.emptyState}>
-            <View style={styles.emptyStateContent}>
-              <Text style={styles.emptyStateIcon}>🥘</Text>
-              <Text style={styles.emptyStateTitle}>Ready to Cook?</Text>
-              <Text style={styles.emptyStateDescription}>
-                Select ingredients you have at home and let AI generate authentic Nigerian recipes for you!
-              </Text>
-
-              <View style={styles.suggestionsContainer}>
-                <Text style={styles.suggestionsTitle}>💡 Popular Ingredients:</Text>
-                <View style={styles.popularIngredients}>
-                  {['Rice 🍚', 'Tomatoes 🍅', 'Onions 🧅', 'Chicken 🍗', 'Plantain 🍌'].map((ingredient) => (
-                    <View key={ingredient} style={styles.popularIngredient}>
-                      <Text style={styles.popularIngredientText}>{ingredient}</Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* Bottom padding for safe area */}
-        <View style={styles.bottomPadding} />
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   scrollView: {
     flex: 1,
   },
-  scrollContent: {
-    paddingVertical: 20,
-  },
   header: {
+    paddingTop: 60,
     paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingBottom: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
   headerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+    marginBottom: 20,
+  },
+  userInfo: {
+    flex: 1,
   },
   greeting: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#FFFFFF',
     marginBottom: 5,
   },
   subtitle: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
-    maxWidth: '80%',
+    color: 'rgba(255, 255, 255, 0.9)',
   },
   profileButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileText: {
-    fontSize: 20,
+    fontSize: 22,
   },
-  ingredientSection: {
-    marginBottom: 20,
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  generateSection: {
-    paddingHorizontal: 20,
+  statCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 12,
+    padding: 12,
     alignItems: 'center',
-    marginBottom: 20,
+    flex: 1,
+    marginHorizontal: 4,
+  },
+  statNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginTop: 2,
+  },
+  searchContainer: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  searchInput: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 15,
+    padding: 15,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  selectedContainer: {
+    backgroundColor: '#ECFDF5',
+    marginHorizontal: 20,
+    marginTop: 15,
+    padding: 15,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#10B981',
+  },
+  selectedTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#10B981',
+    marginBottom: 10,
+  },
+  selectedList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  selectedChip: {
+    backgroundColor: '#10B981',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  selectedChipText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '500',
+    marginRight: 6,
+  },
+  removeIcon: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  errorContainer: {
+    backgroundColor: '#FEF2F2',
+    marginHorizontal: 20,
+    marginTop: 15,
+    padding: 15,
+    borderRadius: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#EF4444',
+  },
+  errorText: {
+    color: '#991B1B',
+    fontSize: 14,
+  },
+  ingredientsContainer: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 15,
+  },
+  categoryContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    overflow: 'hidden',
+  },
+  categoryHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#F9FAFB',
+  },
+  categoryTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
+  },
+  categoryToggle: {
+    fontSize: 16,
+    color: '#6B7280',
+  },
+  ingredientsGrid: {
+    padding: 15,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  ingredientChip: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    minWidth: 100,
+  },
+  selectedIngredientChip: {
+    backgroundColor: '#ECFDF5',
+    borderColor: '#10B981',
+  },
+  ingredientIcon: {
+    fontSize: 16,
+    marginRight: 6,
+  },
+  ingredientName: {
+    fontSize: 14,
+    color: '#374151',
+    fontWeight: '500',
+  },
+  selectedIngredientName: {
+    color: '#10B981',
+  },
+  actionContainer: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+    marginBottom: 30,
   },
   generateButton: {
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    alignItems: 'center',
+    borderRadius: 20,
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 5,
-    width: '100%',
   },
-  disabledGenerateButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    shadowOpacity: 0.1,
+  disabledButton: {
+    opacity: 0.5,
   },
-  loadingGenerateButton: {
-    backgroundColor: '#f0f0f0',
+  generateButtonGradient: {
+    paddingVertical: 18,
+    alignItems: 'center',
   },
   generateButtonText: {
-    color: '#FF6B35',
+    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
   },
   helperText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
+    color: '#6B7280',
+    fontSize: 14,
+    marginTop: 10,
   },
-  errorSection: {
-    marginHorizontal: 20,
-    marginBottom: 20,
+  recipesContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 30,
   },
-  loadingSection: {
-    marginVertical: 40,
+  recipeCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  recipesSection: {
-    marginBottom: 20,
+  recipeHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
   },
-  recipesHeader: {
+  recipeTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    flex: 1,
+    marginRight: 10,
+  },
+  recipeTime: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  recipeDescription: {
+    fontSize: 14,
+    color: '#4B5563',
+    marginBottom: 10,
+    lineHeight: 20,
+  },
+  recipeMeta: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 16,
+    marginBottom: 10,
   },
-  recipesTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
+  recipeDifficulty: {
+    fontSize: 12,
+    color: '#374151',
+    fontWeight: '500',
   },
-  clearText: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontWeight: '600',
-  },
-  emptyState: {
-    paddingHorizontal: 20,
-    paddingVertical: 40,
-  },
-  emptyStateContent: {
-    alignItems: 'center',
-  },
-  emptyStateIcon: {
-    fontSize: 60,
-    marginBottom: 20,
-  },
-  emptyStateTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  emptyStateDescription: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
-    textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 30,
-  },
-  suggestionsContainer: {
-    width: '100%',
-  },
-  suggestionsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  popularIngredients: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
-  },
-  popularIngredient: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  popularIngredientText: {
-    color: '#fff',
+  recipeCost: {
     fontSize: 14,
+    fontWeight: 'bold',
+    color: '#10B981',
+  },
+  recipeFooter: {
+    alignItems: 'center',
+    paddingTop: 5,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+  },
+  viewRecipeText: {
+    fontSize: 14,
+    color: '#10B981',
     fontWeight: '600',
   },
-  bottomPadding: {
-    height: 20,
+  viewAllButton: {
+    backgroundColor: '#10B981',
+    borderRadius: 12,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  viewAllButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
