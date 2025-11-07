@@ -54,7 +54,6 @@ export default function HomeScreen() {
     }
   };
 
-  
   const toggleCategory = (category: string) => {
     setExpandedCategory(expandedCategory === category ? null : category);
   };
