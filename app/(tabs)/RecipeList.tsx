@@ -16,21 +16,20 @@ import { router } from 'expo-router';
 export default function RecipeListScreen() {
   const { generatedRecipes } = useRecipe();
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'breakfast' | 'lunch' | 'dinner'>('all')>('all')>('breakfast')('lunch')('inner')).
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'breakfast' | 'lunch' | 'dinner'>('all');
 
   const filteredRecipes = React.useMemo(() => {
     if (!generatedRecipes || generatedRecipes.length === 0) {
       return [];
     }
-    return filteredRecipes.filter(recipe => {
+    return generatedRecipes.filter(recipe => {
       if (selectedCategory === 'all') return true;
-      return recipe.category === selectedCategory || selectedCategory === 'all';
+      return recipe.category === selectedCategory;
     });
-  }, [generatedRecipes, selectedCategory, selectedCategory]);
+  }, [generatedRecipes, selectedCategory]);
 
   const handleRefresh = () => {
     setRefreshing(true);
-    // Clear recipes and refresh from RecipeContext
     setTimeout(() => setRefreshing(false), 2000);
   };
 
@@ -43,37 +42,37 @@ export default function RecipeListScreen() {
 
   const renderRecipeCard = ({ item, index }: { item: Recipe; index: number }) => {
     return (
-    <TouchableOpacity
-      style={styles.recipeCard}
-      onPress={() => handleRecipeDetail(item)}
-    >
-      <Text style={styles.recipeTitle}>{item.title}</Text>
-      <Text style={styles.recipeMeta}>
-        <View style={styles.recipeMetaItem}>
-          <Ionicons name="time-outline" size={16} color="#6B7280" />
-          <Text style={styles.metaText}>{item.cookingTime}</Text>
-        </View>
-        <View style={[styles.recipeMetaItem]}>
-          <Ionicons name="people-outline" size={16} color="#9CA3AF" />
-          <Text style={[styles.metaText, { color: '#4CAF50'}]}>
-            {item.servings} servings
+      <TouchableOpacity
+        style={styles.recipeCard}
+        onPress={() => handleRecipeDetail(item)}
+      >
+        <Text style={styles.recipeTitle}>{item.title}</Text>
+        <View style={styles.recipeMeta}>
+          <View style={styles.recipeMetaItem}>
+            <Ionicons name="time-outline" size={16} color="#6B7280" />
+            <Text style={styles.metaText}>{item.cookingTime}</Text>
+          </View>
+          <View style={styles.recipeMetaItem}>
+            <Ionicons name="people-outline" size={16} color="#9CA3AF" />
+            <Text style={[styles.metaText, { color: '#4CAF50'}]}>
+              {item.servings} servings
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
-    </TouchableOpacity>
-  );
+    );
+  };
 
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyIcon}>🍴</Text>
       <Text style={styles.emptyTitle}>No recipes generated yet</Text>
-      <Text style={emptyDescription}>
+      <Text style={styles.emptyDescription}>
         Select 2+ ingredients and generate some amazing Nigerian recipes!
       </Text>
       <TouchableOpacity
         style={styles.generateButton}
-        onPress={() => router.push('/(  // Navigate to home screen
-        )}>
+        onPress={() => router.push('/')}>
         <Text style={styles.generateButtonText}>Generate Recipes</Text>
       </TouchableOpacity>
     </View>
@@ -88,59 +87,64 @@ export default function RecipeListScreen() {
             {generatedRecipes.length} recipes available
           </Text>
         </View>
+      </View>
 
-        {/* Filter Tabs */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
-          {['all', 'breakfast', 'lunch', 'inner'].map((category) => (
-            <TouchableOpacity
-              key={category}
-              style={[
-                styles.filterTab,
-                selectedCategory === category && styles.activeFilterTab,
-              ]}
-              onPress={() => setSelectedCategory(category)}
-            >
-              <Text style={[
-                styles.filterTabText,
-                selectedCategory === category && styles.activeFilterTabText,
-              ]}>
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-        {/* Recipe List */}
-        <View style={styles.recipesList}>
-          {renderEmptyState()}
-          {filteredRecipes.map((item, index) => renderRecipeCard(item, index))}
-        </View>
-
-        {/* Refresh Button */}
-        <View style={styles.refreshContainer}>
+      {/* Filter Tabs */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
+        {['all', 'breakfast', 'lunch', 'dinner'].map((category) => (
           <TouchableOpacity
+            key={category}
             style={[
-              styles.refreshButton,
-              refreshing && styles.refreshButtonDisabled,
-              refreshing && styles.refreshButtonDisabled
+              styles.filterTab,
+              selectedCategory === category && styles.activeFilterTab,
             ]}
-            onPress={handleRefresh}
-            disabled={refreshing}
+            onPress={() => setSelectedCategory(category as any)}
           >
-            <Ionicons
-              name="refresh-circle-outline"
-              size={16}
-              color={refreshing ? '#FFFFFF' : '#9CA3AF'}
-            />
             <Text style={[
-              styles.refreshButtonText,
-              refreshing && styles.refreshButtonDisabledText,
+              styles.filterTabText,
+              selectedCategory === category && styles.activeFilterTabText,
             ]}>
-              {refreshing ? 'Refreshing...' : 'Refresh Recipes'}
+              {category.charAt(0).toUpperCase() + category.slice(1)}
             </Text>
           </TouchableOpacity>
-        </View>
+        ))}
       </ScrollView>
+
+      {/* Recipe List */}
+      <FlatList
+        data={filteredRecipes}
+        renderItem={renderRecipeCard}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
+        contentContainerStyle={styles.recipesList}
+        ListEmptyComponent={renderEmptyState}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      />
+
+      {/* Refresh Button */}
+      <View style={styles.refreshContainer}>
+        <TouchableOpacity
+          style={[
+            styles.refreshButton,
+            refreshing && styles.refreshButtonDisabled,
+          ]}
+          onPress={handleRefresh}
+          disabled={refreshing}
+        >
+          <Ionicons
+            name="refresh-circle-outline"
+            size={16}
+            color={refreshing ? '#FFFFFF' : '#9CA3AF'}
+          />
+          <Text style={[
+            styles.refreshButtonText,
+            refreshing && styles.refreshButtonDisabledText,
+          ]}>
+            {refreshing ? 'Refreshing...' : 'Refresh Recipes'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -161,13 +165,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 16,
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 5,
   },
   headerSubtitle: {
     fontSize: 16,
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
   filterContainer: {
     flexDirection: 'row',
     paddingVertical: 12,
-  backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
   },
@@ -186,6 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9FAFB',
     borderBottomWidth: 1,
     borderBottomColor: '#10B981',
+    marginRight: 8,
   },
   activeFilterTab: {
     backgroundColor: '#10B981',
@@ -204,20 +207,19 @@ const styles = StyleSheet.create({
   refreshContainer: {
     alignItems: 'center',
     paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
   },
   refreshButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#10B981',
     paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 8,
-    shadowColor: '#10B981',
-    shadowColor: '#10B981',
   },
   refreshButtonDisabled: {
     opacity: 0.5,
-    shadowColor: '#10B981',
-    shadowColor: '#10B981',
   },
   refreshButtonDisabledText: {
     color: '#FFFFFF',
@@ -226,6 +228,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: 'bold',
+    marginLeft: 8,
   },
   emptyContainer: {
     flex: 1,
@@ -250,10 +253,21 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     textAlign: 'center',
     lineHeight: 22,
+    marginBottom: 20,
+  },
+  generateButton: {
+    backgroundColor: '#10B981',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+  generateButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   recipesList: {
     padding: 16,
-    gap: 12,
   },
   recipeCard: {
     backgroundColor: '#FFFFFF',
@@ -261,11 +275,12 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     shadowColor: '#000',
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
   recipeTitle: {
     fontSize: 18,
@@ -277,48 +292,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
   },
   recipeMetaItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 4,
   },
   metaText: {
     color: '#6B7280',
     fontSize: 14,
-  },
-  recipeTime: {
-    fontSize: 12,
-    color: '#6B7280',
-  },
-  metaText: {
-    color: '#4CAF50',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  recipeFooter: {
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-  },
-  recipeFooter: {
-    alignItems: 'center',
-  },
-  recipeFooter: {
-    alignItems: 'center',
-    fontSize: 16,
-    color: '#10B981',
-    fontWeight: '600',
-  },
-  recipeFooterText: {
-    fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-    textAlign: 'center',
-    fontWeight: 'normal',
   },
 });
 
