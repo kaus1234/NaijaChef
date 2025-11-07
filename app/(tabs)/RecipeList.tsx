@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useRecipe } from '@/src/services/openai';
-import { useRecipe } from '@/src/context/RecipeContext';
+import { Recipe, useRecipe } from '@/src/context/RecipeContext';
 import { router } from 'expo-router';
 
 export default function RecipeListScreen() {
