@@ -207,6 +207,11 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
+  generateButtonText: {
+    color: '#10B981',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   signInButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderColor: '#10B981',
