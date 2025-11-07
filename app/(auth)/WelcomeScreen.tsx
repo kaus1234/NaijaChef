@@ -14,11 +14,11 @@ export default function WelcomeScreen() {
   const router = useRouter();
 
   const handleGetStarted = () => {
-    router.push('/(auth)/sign-up'); // Navigate to sign up screen
+    router.push('/SignUpScreen'); // Navigate to sign up screen
   };
 
   const handleSignIn = () => {
-    router.push('/(auth)/sign-in'); // Navigate to sign in screen
+    router.push('/SignInScreen'); // Navigate to sign in screen
   };
 
   return (
