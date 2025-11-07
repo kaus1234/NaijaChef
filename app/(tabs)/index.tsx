@@ -21,7 +21,7 @@ export default function HomeScreen() {
     generateRecipes,
     loading,
     error,
-    setSelectedIngredients,
+    toggleIngredient,
     generatedRecipes
   } = useRecipe();
   const router = useRouter();
