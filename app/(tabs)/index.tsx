@@ -55,9 +55,9 @@ export default function HomeScreen() {
   };
 
   const toggleIngredient = (ingredient: string) => {
-    setSelectedIngredients(prev =>
+    setSelectedIngredients((prev: string[]) =>
       prev.includes(ingredient)
-        ? prev.filter(i => i !== ingredient)
+        ? prev.filter((i: string) => i !== ingredient)
         : [...prev, ingredient]
     );
   };
