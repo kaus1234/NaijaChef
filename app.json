@@ -32,7 +32,8 @@
     "extra": {
       "eas": {
         "projectId": "sabicook-project-id"
-      }
+      },
+      "openaiApiKey": process.env.EXPO_PUBLIC_OPENAI_API_KEY
     },
     "plugins": [
       "expo-router",
