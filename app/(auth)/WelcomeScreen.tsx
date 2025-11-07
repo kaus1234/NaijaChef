@@ -233,11 +233,15 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
   },
+  footerTextContainer: {
+    alignItems: 'center',
+  },
   footerText: {
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 14,
     fontWeight: '500',
     textAlign: 'center',
+    marginBottom: 4,
   },
   footerSubtext: {
     color: 'rgba(255, 255, 255, 0.9)',
