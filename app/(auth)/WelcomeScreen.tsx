@@ -14,8 +14,7 @@ export default function WelcomeScreen() {
   const router = useRouter();
 
   const handleGetStarted = () => {
-    router.push('/(  // Navigate to main app after sign up
-    );
+    router.push('/(auth)/sign-up'); // Navigate to sign up screen
   };
 
   const handleSignIn = () => {
