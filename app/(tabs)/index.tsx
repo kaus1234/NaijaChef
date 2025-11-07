@@ -54,14 +54,7 @@ export default function HomeScreen() {
     }
   };
 
-  const toggleIngredient = (ingredient: string) => {
-    setSelectedIngredients((prev: string[]) =>
-      prev.includes(ingredient)
-        ? prev.filter((i: string) => i !== ingredient)
-        : [...prev, ingredient]
-    );
-  };
-
+  
   const toggleCategory = (category: string) => {
     setExpandedCategory(expandedCategory === category ? null : category);
   };
