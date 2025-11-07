@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Recipe, useRecipe } from '@/src/context/RecipeContext';
 import { router } from 'expo-router';
 
-export default function RecipeListScreen() {
+function RecipeListScreen() {
   const { generatedRecipes } = useRecipe();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'breakfast' | 'lunch' | 'dinner'>('all');
