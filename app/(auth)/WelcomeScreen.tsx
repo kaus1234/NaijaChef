@@ -18,8 +18,7 @@ export default function WelcomeScreen() {
   };
 
   const handleSignIn = () => {
-    router.push('/(  // Navigate to sign in screen
-    );
+    router.push('/(auth)/sign-in'); // Navigate to sign in screen
   };
 
   return (
