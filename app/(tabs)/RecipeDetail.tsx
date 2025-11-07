@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   completedStepText: {
-    textDecorationLineThrough: 'line-through',
+    textDecorationLine: 'line-through',
     color: '#9CA3AF',
   },
   stepTime: {
