@@ -14,7 +14,7 @@ export default function AuthLayout() {
         name="SignInScreen"
         options={{
           title: 'Sign In',
-          headerStyle: { backgroundColor: '#FF6B35' },
+          headerStyle: { backgroundColor: '#10B981' },
           headerTintColor: '#fff',
           presentation: 'modal'
         }}
