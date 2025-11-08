@@ -45,7 +45,7 @@ export default function ForgotPasswordScreen() {
 
   if (emailSent) {
     return (
-      <LinearGradient colors={['#FF6B35', '#FFB84D']} style={styles.container}>
+      <LinearGradient colors={['#10B981', '#059669']} style={styles.container}>
         <KeyboardAvoidingView
           style={styles.keyboardAvoidingView}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -78,7 +78,7 @@ export default function ForgotPasswordScreen() {
   }
 
   return (
-    <LinearGradient colors={['#FF6B35', '#FFB84D']} style={styles.container}>
+    <LinearGradient colors={['#10B981', '#059669']} style={styles.container}>
       <KeyboardAvoidingView
         style={styles.keyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
