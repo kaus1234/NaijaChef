@@ -23,7 +23,7 @@ export default function AuthLayout() {
         name="SignUpScreen"
         options={{
           title: 'Sign Up',
-          headerStyle: { backgroundColor: '#FF6B35' },
+          headerStyle: { backgroundColor: '#10B981' },
           headerTintColor: '#fff',
           presentation: 'modal'
         }}
