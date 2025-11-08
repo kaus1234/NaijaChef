@@ -32,7 +32,7 @@ export default function AuthLayout() {
         name="ForgotPasswordScreen"
         options={{
           title: 'Reset Password',
-          headerStyle: { backgroundColor: '#FF6B35' },
+          headerStyle: { backgroundColor: '#10B981' },
           headerTintColor: '#fff',
           presentation: 'modal'
         }}
